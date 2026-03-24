@@ -10,7 +10,7 @@ Create high-signal project memory for new repositories by generating a concise `
 ## Workflow Overview
 
 1. **Gather context** - Read user instructions and repository facts; ask only unresolved questions
-2. **Research evidence** - Identify tech stack, project layout, commands, coarse-grained modules, boundaries, and stable architectural invariants with file:line references
+2. **Research evidence** - Identify tech stack, project layout, commands, coarse-grained modules, boundaries, and stable architectural invariants with durable code references
 3. **Propose structure** - Share planned AGENTS.md sections and supporting docs before writing
 4. **Write docs** - Generate `AGENTS.md`, supporting docs, and the `CLAUDE.md` symlink
 5. **Quality review** - Validate constraints from the request and improve clarity
@@ -50,11 +50,20 @@ Collect concrete references for each required section.
 
 ### Evidence Rules
 
-- Use file:line references instead of code snippets
+- Prefer durable references over brittle ones: cite file paths plus stable names such as directories, packages, modules, entrypoints, functions, types, commands, or config keys
+- Use exact `file:line` references only when they materially help and are likely to stay stable enough to verify soon, such as `Makefile`, `go.mod`, top-level config, or a narrowly scoped claim in a small file
+- For architecture docs, name important files, modules, and types in prose; treat any `:line` references as supporting evidence snapshots rather than the primary navigation method
 - Prefer primary sources (`src/`, command definitions, config files)
 - For architecture, prefer stable structural facts over volatile implementation details
 - Include invariants and boundaries only when the codebase provides concrete evidence for them
 - If evidence conflicts across docs and code, prefer the code and mention mismatch briefly
+
+### Reference Durability Heuristics
+
+- Best: directory names, module names, package names, type names, function names, command names, config section names
+- Good: file paths with a named symbol or responsibility, for example ``main/shark/shark.go` (`main`, `initializeWorkflowAndETCD`)``
+- Use sparingly: raw `file:line` references in large, frequently edited source files
+- Avoid depending on direct code links as the main way a contributor finds things; the document should still work with text search or symbol search alone
 
 ## Step 3: Propose Structure
 
@@ -92,7 +101,7 @@ Use [memory-template.md](memory-template.md).
 Required constraints:
 - Keep total length under 150 lines
 - Include WHAT, WHY, HOW coverage
-- Use file:line references instead of code snippets
+- Use concrete evidence references instead of code snippets; prefer `file:line` only for stable operational facts and smaller files
 - Do not include formatting/style rules that linters already enforce
 - Add an "Additional Documentation" section that points to `ARCHITECTURE.md` and any `docs/*` files
 
@@ -106,9 +115,9 @@ Required constraints:
 - Provide a codemap of coarse-grained modules and their relationships
 - Call out important architectural invariants, especially absences and layer boundaries
 - End with cross-cutting concerns if they materially affect work across modules
-- Name important directories, modules, files, and types without depending on fragile direct links
+- Name important directories, modules, files, and types without depending on fragile direct links; prefer symbol names and searchable identifiers over raw line-number navigation
 - Avoid low-level implementation walkthroughs and volatile details that should live inline or in narrower docs
-- Support non-trivial claims with concrete file:line references
+- Support non-trivial claims with concrete evidence, but keep line-number citations secondary and sparse in `ARCHITECTURE.md`
 
 Create additional `docs/*.md` files only when specialized detail would make `ARCHITECTURE.md` or `AGENTS.md` too dense.
 
@@ -141,6 +150,13 @@ Required constraints:
 - References from `AGENTS.md` should be direct and descriptive
 - Avoid deep reference chains
 
+### 4e. Reference Style By Document
+
+- `AGENTS.md`: acceptable to use `file:line` for commands, entrypoints, and compact operational facts, but avoid peppering every sentence with line numbers
+- `ARCHITECTURE.md`: prefer codemap prose built around module, file, and type names; add a short `Evidence` note only where a non-obvious claim needs support
+- When a file is large or changes frequently, cite the symbol name and path rather than betting on a line number staying valid
+- If the user explicitly requests strict `file:line` citations everywhere, comply, but mention that they are maintenance-heavy and best treated as snapshots
+
 ## Step 5: Quality Review
 
 Run this checklist before presenting output:
@@ -148,7 +164,7 @@ Run this checklist before presenting output:
 - [ ] `AGENTS.md` is under 150 lines
 - [ ] `CLAUDE.md` is a symlink to `AGENTS.md`
 - [ ] Sections cover project overview, tech stack, key directories, essential commands, additional docs
-- [ ] File:line references are present and accurate
+- [ ] References are concrete and durable; any `file:line` citations used are accurate at the time of writing
 - [ ] No code snippets in `AGENTS.md`
 - [ ] No generic formatting/style guidance duplicated from linters
 - [ ] `ARCHITECTURE.md` includes a bird's-eye view, codemap, and any proven invariants or boundaries
@@ -169,5 +185,5 @@ Present result with file paths and invite targeted revision requests.
 - Keep narrower advanced details in dedicated `docs/` files
 
 **Reliability:**
-- Cite source lines for every non-trivial claim
-- Re-check references after edits
+- Cite primary sources for non-trivial claims, but prefer references that will survive ordinary refactors
+- Re-check any exact line-number citations after edits
