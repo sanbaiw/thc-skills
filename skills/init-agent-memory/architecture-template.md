@@ -56,6 +56,11 @@ Include this section only for concerns that materially affect changes across the
 
 Store this file at `ARCHITECTURE.md` next to `AGENTS.md`.
 
+## Reference Style
+
+- Use repo-relative paths and symbol names so the document remains portable across clones and review tools
+- Avoid workstation-specific absolute paths or absolute local markdown links
+
 ## Exclusions
 
 Do not include:

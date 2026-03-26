@@ -35,6 +35,7 @@ Use this template to create the concise canonical memory document.
 ## Constraints
 
 - Keep full document under 150 lines
-- Use file:line references instead of code snippets
+- Use repo-relative references such as `path/to/file:line` instead of code snippets
+- Avoid workstation-specific absolute paths or absolute local markdown links
 - Keep guidance universally applicable for contributors and agents
 - Treat `AGENTS.md` as canonical, then create `CLAUDE.md` as a symlink to `AGENTS.md`
