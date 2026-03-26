@@ -71,9 +71,10 @@ Collect concrete references for each required section.
 ### Evidence Rules
 
 - Prefer durable references over brittle ones: cite file paths plus stable names such as directories, packages, modules, entrypoints, functions, types, commands, or config keys
-- Use repo-relative paths in generated docs. Do not emit workstation-specific absolute filesystem paths or absolute markdown links such as `/data/home/...`, `/Users/...`, `file://...`, or editor-local URLs unless the user explicitly asks for them
+- Default to repo-relative paths rooted at the repository, not absolute filesystem paths tied to one machine
 - Use exact `file:line` references only when they materially help and are likely to stay stable enough to verify soon, such as `Makefile`, `go.mod`, top-level config, or a narrowly scoped claim in a small file
 - For architecture docs, name important files, modules, and types in prose; treat any `:line` references as supporting evidence snapshots rather than the primary navigation method
+- For longer docs, prefer section-level source anchors or component indexes over repeating a file citation in every bullet
 - Prefer primary sources such as `src/`, command definitions, config files, and entrypoints
 - For architecture, prefer stable structural facts over volatile implementation details
 - Include invariants and boundaries only when the codebase provides concrete evidence for them
@@ -193,12 +194,13 @@ Required constraints:
 - Put specialized details in `docs/*.md`
 - References from the canonical memory doc should be direct and descriptive
 - Avoid deep reference chains
+- Keep references collaborator-friendly: no workstation-specific absolute paths, no broken cross-doc links
 
 ### 4f. Reference Style By Document
 
-- Canonical memory doc: acceptable to use `file:line` for commands, entrypoints, and compact operational facts, but avoid peppering every sentence with line numbers
+- Canonical memory doc: use repo-relative paths plus stable symbols as the default; acceptable to use `file:line` for commands, entrypoints, and compact operational facts, but avoid peppering every sentence with line numbers
 - `ARCHITECTURE.md`: prefer codemap prose built around module, file, and type names; add a short evidence note only where a non-obvious claim needs support
-- Supporting docs under `docs/`: keep references repo-relative and portable; avoid absolute local paths even when using markdown links
+- Supporting docs under `docs/`: prefer repo-relative file references, short anchor lists, and searchable symbol names over absolute links or dense line-by-line citation blocks
 - When a file is large or changes frequently, cite the symbol name and path rather than betting on a line number staying valid
 - If the user explicitly requests strict `file:line` citations everywhere, comply, but mention that they are maintenance-heavy and best treated as snapshots
 
@@ -210,7 +212,8 @@ Run this checklist before presenting output:
 - [ ] Compatibility symlinks point to the canonical memory doc as intended
 - [ ] Sections cover project overview, tech stack, key directories, essential commands, and additional docs
 - [ ] References are concrete and durable; any `file:line` citations used are accurate at the time of writing
-- [ ] No workstation-specific absolute paths or absolute local markdown links were introduced unless explicitly requested
+- [ ] References use repo-relative paths unless an absolute path is explicitly required by the user
+- [ ] No workstation-specific absolute paths or broken cross-document references remain
 - [ ] No code snippets in the canonical memory doc
 - [ ] No generic formatting or style guidance duplicated from linters
 - [ ] `ARCHITECTURE.md` includes a bird's-eye view, codemap, and any proven invariants or boundaries
